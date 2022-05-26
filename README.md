@@ -1,0 +1,1 @@
+The mock responses and the expectations and held here. These responses will be used when running the cypress e2e tests in the STFC environment.
