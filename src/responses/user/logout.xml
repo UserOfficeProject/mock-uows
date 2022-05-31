@@ -1,0 +1,1 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><ns2:logoutResponse xmlns:ns2="http://webservice.UserOffice.stfc.com/"></soap:Body></soap:Envelope>

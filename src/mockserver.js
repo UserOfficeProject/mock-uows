@@ -23,27 +23,25 @@ async function mockserver() {
                 : (regexp = '<UserNumber>(.*?)<');
             const match = requestXml.match(regexp);
 
-            responsePath = 'src/responses/user/' + method + '/' + match[1] + '.txt'
+            responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml'
         }
         if (method === 'getSearchableBasicPersonDetailsFromEmail') {
             const match = requestXml.match('<Email>(.*?)<');
 
-            responsePath = 'src/responses/user/' + method + '/' + match[1] + '.txt'
+            responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml'
         }
         if (
             method === 'getBasicPeopleDetailsFromUserNumbers' &&
             requestXml.includes('<UserNumbers>')
         ) {
-            responsePath = 'src/responses/user/notEmptyResponse' + '.txt'
+            responsePath = 'src/responses/user/notEmptyResponse' + '.xml'
         }
         if (responsePath === null || responsePath === undefined) {
-            responsePath = 'src/responses/user/' + method + '.txt'
+            responsePath = 'src/responses/user/' + method + '.xml'
         }
-        const file = JSON.parse(
-            fs.readFileSync(responsePath, 'utf8')
-        );
+        const file = fs.readFileSync(responsePath, 'utf8')
         return {
-            body: file.body.xml,
+            body: file,
         };
     };
 
