@@ -8,7 +8,6 @@ async function mockserver() {
         if (request.method !== 'POST') {
             return;
         }
-        let file;
         let responsePath;
         const requestXml = String(request.body.xml);
         const match = requestXml.match('<tns:(.*?)>');
@@ -40,7 +39,7 @@ async function mockserver() {
         if (responsePath === null || responsePath === undefined) {
             responsePath = 'src/responses/user/' + method + '.txt'
         }
-        file = JSON.parse(
+        const file = JSON.parse(
             fs.readFileSync(responsePath, 'utf8')
         );
         return {
