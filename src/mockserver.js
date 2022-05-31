@@ -9,8 +9,9 @@ async function mockserver() {
             return;
         }
         let file;
-        const name = String(request.body.xml);
-        const match = name.match('<tns:(.*?)>');
+        let responsePath;
+        const requestXml = String(request.body.xml);
+        const match = requestXml.match('<tns:(.*?)>');
         const method = match[1];
 
         if (
@@ -21,42 +22,32 @@ async function mockserver() {
             method === 'getSearchableBasicPeopleDetailsFromUserNumbers'
                 ? (regexp = '<UserNumbers>(.*?)<')
                 : (regexp = '<UserNumber>(.*?)<');
-            const match = name.match(regexp);
+            const match = requestXml.match(regexp);
 
-            file = JSON.parse(
-                fs.readFileSync(
-                    'src/responses/user/' + method + '/' + match[1] + '.txt',
-                    'utf8'
-                )
-            );
+            responsePath = 'src/responses/user/' + method + '/' + match[1] + '.txt'
         }
         if (method === 'getSearchableBasicPersonDetailsFromEmail') {
-            const match = name.match('<Email>(.*?)<');
+            const match = requestXml.match('<Email>(.*?)<');
 
-            file = JSON.parse(
-                fs.readFileSync(
-                    'src/responses/user/' + method + '/' + match[1] + '.txt',
-                    'utf8'
-                )
-            );
+            responsePath = 'src/responses/user/' + method + '/' + match[1] + '.txt'
         }
         if (
             method === 'getBasicPeopleDetailsFromUserNumbers' &&
-            name.includes('<UserNumbers>')
+            requestXml.includes('<UserNumbers>')
         ) {
-            file = JSON.parse(
-                fs.readFileSync('src/responses/user/notEmptyResponse' + '.txt', 'utf8')
-            );
+            responsePath = 'src/responses/user/notEmptyResponse' + '.txt'
         }
-        if (file === null || file === undefined) {
-            file = JSON.parse(
-                fs.readFileSync('src/responses/user/' + method + '.txt', 'utf8')
-            );
+        if (responsePath === null || responsePath === undefined) {
+            responsePath = 'src/responses/user/' + method + '.txt'
         }
+        file = JSON.parse(
+            fs.readFileSync(responsePath, 'utf8')
+        );
         return {
             body: file.body.xml,
         };
     };
+
     mockServerClient('mockServer', 1080)
         .mockWithCallback(
             {
