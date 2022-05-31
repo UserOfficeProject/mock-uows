@@ -10,8 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "@user-office-software/duo-logger": "^2.0.2",
-    "fs": "^0.0.1-security",
-    "fs.promises": "^0.1.2",
     "mockserver-client": "^5.13.2"
   },
   "type": "module"
