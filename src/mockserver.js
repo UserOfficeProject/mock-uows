@@ -4,6 +4,8 @@ import { logger } from '@user-office-software/duo-logger';
 import { mockServerClient } from 'mockserver-client';
 
 async function mockserver() {
+    await new Promise(r => setTimeout(r, 20000));
+
     const respondToPostRequest = function (request) {
         if (request.method !== 'POST') {
             return;
