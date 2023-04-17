@@ -36,6 +36,24 @@ async function mockserver() {
         ) {
             responsePath = 'src/responses/user/notEmptyResponse' + '.xml'
         }
+        if(method ==='getPersonDetailsFromSessionId' &&
+           requestXml.includes('<SessionId>')
+        ){
+            const match = requestXml.match('<SessionId>(.*?)<');
+            if(match[1].toString()==='officer'){
+                responsePath = 'src/responses/user/' + method + '/1.xml'
+            }
+            responsePath = 'src/responses/user/' + method + '/4.xml'
+        }
+
+        if (
+            method === 'getRolesForUser'
+        ) {
+            const match = requestXml.match('<userNumber>(.*?)<');
+
+            responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml'
+        }
+
         if (responsePath === null || responsePath === undefined) {
             responsePath = 'src/responses/user/' + method + '.xml'
         }
