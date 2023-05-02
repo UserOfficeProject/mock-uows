@@ -30,20 +30,17 @@ async function mockserver() {
 
             responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml'
         }
-        if (
-            method === 'getBasicPeopleDetailsFromUserNumbers' &&
-            requestXml.includes('<UserNumbers>')
-        ) {
-            responsePath = 'src/responses/user/notEmptyResponse' + '.xml'
-        }
-        if(method ==='getPersonDetailsFromSessionId' &&
-           requestXml.includes('<SessionId>')
+
+        if (method ==='getPersonDetailsFromSessionId' &&
+            requestXml.includes('<SessionId>')
         ){
             const match = requestXml.match('<SessionId>(.*?)<');
-            if(match[1].toString()==='officer'){
+            if (match[1].toString()==='externalUser'){
+                responsePath = 'src/responses/user/' + method + '/4.xml'
+            }
+            else {
                 responsePath = 'src/responses/user/' + method + '/1.xml'
             }
-            responsePath = 'src/responses/user/' + method + '/4.xml'
         }
 
         if (
@@ -53,7 +50,18 @@ async function mockserver() {
 
             responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml'
         }
-
+        if (
+            method === 'getBasicPeopleDetailsFromUserNumbers' &&
+            requestXml.includes('<UserNumbers>')
+        ) {
+            const match = requestXml.match('<UserNumbers>(.*?)<');
+            if (match[1] === 1 || match[1] === 4){
+                responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml'
+            }
+            else {
+                responsePath = 'src/responses/user/notEmptyResponse' + '.xml'
+            }
+        }
         if (responsePath === null || responsePath === undefined) {
             responsePath = 'src/responses/user/' + method + '.xml'
         }
