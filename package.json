@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@user-office-software/duo-logger": "^2.0.2",
-    "mockserver-client": "^5.13.2"
+    "mockserver-client": "5.15.0"
   },
   "type": "module"
 }
