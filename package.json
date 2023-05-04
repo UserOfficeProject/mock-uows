@@ -12,5 +12,8 @@
     "@user-office-software/duo-logger": "^2.0.2",
     "mockserver-client": "5.15.0"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "prettier": "2.8.8"
+  }
 }
