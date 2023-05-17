@@ -53,6 +53,10 @@ async function mockserver() {
       requestXml.includes('<UserNumbers>')
     ) {
       const match = requestXml.match('<UserNumbers>(.*?)<');
+      /**
+       * This will match user id of test users in the database form e2e cypress
+       * initialDBData users.  
+       */
       if (match[1] === 1 || match[1] === 4) {
         responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml';
       } else {
