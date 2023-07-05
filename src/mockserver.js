@@ -95,13 +95,24 @@ async function mockserver() {
         responsePath = 'src/responses/user/notEmptyResponse' + '.xml';
       }
     }
+
     if (responsePath === null || responsePath === undefined) {
       responsePath = 'src/responses/user/' + method + '.xml';
     }
-    const file = fs.readFileSync(responsePath, 'utf8');
-    return {
-      body: file,
-    };
+
+    if (!fs.existsSync(responsePath)) {
+      logger.logError('Response file does not exist', { responsePath });
+
+      return null;
+    } else {
+      logger.logInfo('Returning response file', { responsePath });
+
+      const file = fs.readFileSync(responsePath, 'utf8');
+
+      return {
+        body: file,
+      };
+    }
   };
 
   mockServerClient('mockServer', 1080)
