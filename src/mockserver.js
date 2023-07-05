@@ -40,6 +40,13 @@ async function mockserver() {
     if (request.method !== 'POST') {
       return;
     }
+
+    const roleMappings = {
+      user: 1, // Internal user
+      officer: 2,
+      externalUser: 4,
+    };
+
     let responsePath;
     const requestXml = String(request.body.xml);
     const match = requestXml.match('<tns:(.*?)>');
@@ -67,12 +74,11 @@ async function mockserver() {
       method === 'getPersonDetailsFromSessionId' &&
       requestXml.includes('<SessionId>')
     ) {
-      const match = requestXml.match('<SessionId>(.*?)<');
-      if (match[1].toString() === 'externalUser') {
-        responsePath = 'src/responses/user/' + method + '/4.xml';
-      } else {
-        responsePath = 'src/responses/user/' + method + '/1.xml';
-      }
+      const match = requestXml.match("<SessionId>(.*?)<");
+      const sessionId = match[1].toString();
+      const userNumber = roleMappings[sessionId] || 1; // Default to 'user'
+
+      responsePath = `src/responses/user/${method}/${userNumber}.xml`;
     }
 
     if (method === 'getRolesForUser') {
@@ -80,6 +86,7 @@ async function mockserver() {
 
       responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml';
     }
+
     if (
       method === 'getBasicPeopleDetailsFromUserNumbers' &&
       requestXml.includes('<UserNumbers>')
