@@ -1,9 +1,41 @@
 import fs from 'fs';
 
+import { promisify } from 'util';
 import { logger } from '@user-office-software/duo-logger';
 import { mockServerClient } from 'mockserver-client';
 
+const wait = promisify(setTimeout);
+const MAX_RETRIES = 5;
+const RETRY_INTERVAL_MS = 3000;
+
+async function isMockServerRunning() {
+  let retries = 0;
+  let mockServerAvailable = false;
+
+  while (retries < MAX_RETRIES) {
+    try {
+      await mockServerClient('mockServer', 1080).retrieveRecordedRequests({});
+      mockServerAvailable = true;
+      break;
+    } catch (error) {
+      logger.logInfo('Mock server not yet available. Retrying...', { error });
+      retries++;
+      await wait(RETRY_INTERVAL_MS);
+    }
+  }
+
+  return mockServerAvailable;
+}
+
 async function mockserver() {
+  const mockServerReady = await isMockServerRunning();
+
+  if (!mockServerReady) {
+    logger.logError('Mock server failed to start within the specified time.');
+
+    return;
+  }
+
   const respondToPostRequest = function (request) {
     if (request.method !== 'POST') {
       return;
