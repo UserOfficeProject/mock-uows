@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@user-office-software/duo-logger": "^2.0.2",
+    "@user-office-software/duo-logger": "^2.1.1",
     "mockserver-client": "5.15.0"
   },
   "type": "module",
