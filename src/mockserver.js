@@ -1,13 +1,52 @@
 import fs from 'fs';
 
+import { promisify } from 'util';
 import { logger } from '@user-office-software/duo-logger';
 import { mockServerClient } from 'mockserver-client';
 
+const wait = promisify(setTimeout);
+const MAX_RETRIES = 5;
+const RETRY_INTERVAL_MS = 3000;
+
+async function isMockServerRunning() {
+  let retries = 0;
+  let mockServerAvailable = false;
+
+  while (retries < MAX_RETRIES) {
+    try {
+      await mockServerClient('mockServer', 1080).retrieveRecordedRequests({});
+      mockServerAvailable = true;
+      break;
+    } catch (error) {
+      logger.logInfo('Mock server not yet available. Retrying...', { error });
+      retries++;
+      await wait(RETRY_INTERVAL_MS);
+    }
+  }
+
+  return mockServerAvailable;
+}
+
 async function mockserver() {
+  const mockServerReady = await isMockServerRunning();
+
+  if (!mockServerReady) {
+    logger.logError('Mock server failed to start within the specified time.');
+
+    return;
+  }
+
   const respondToPostRequest = function (request) {
     if (request.method !== 'POST') {
       return;
     }
+
+    const roleMappings = {
+      user: 1, // Internal user
+      officer: 2,
+      externalUser: 4,
+    };
+
     let responsePath;
     const requestXml = String(request.body.xml);
     const match = requestXml.match('<tns:(.*?)>');
@@ -35,12 +74,11 @@ async function mockserver() {
       method === 'getPersonDetailsFromSessionId' &&
       requestXml.includes('<SessionId>')
     ) {
-      const match = requestXml.match('<SessionId>(.*?)<');
-      if (match[1].toString() === 'externalUser') {
-        responsePath = 'src/responses/user/' + method + '/4.xml';
-      } else {
-        responsePath = 'src/responses/user/' + method + '/1.xml';
-      }
+      const match = requestXml.match("<SessionId>(.*?)<");
+      const sessionId = match[1].toString();
+      const userNumber = roleMappings[sessionId] || 1; // Default to 'user'
+
+      responsePath = `src/responses/user/${method}/${userNumber}.xml`;
     }
 
     if (method === 'getRolesForUser') {
@@ -48,6 +86,7 @@ async function mockserver() {
 
       responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml';
     }
+
     if (
       method === 'getBasicPeopleDetailsFromUserNumbers' &&
       requestXml.includes('<UserNumbers>')
@@ -63,13 +102,24 @@ async function mockserver() {
         responsePath = 'src/responses/user/notEmptyResponse' + '.xml';
       }
     }
+
     if (responsePath === null || responsePath === undefined) {
       responsePath = 'src/responses/user/' + method + '.xml';
     }
-    const file = fs.readFileSync(responsePath, 'utf8');
-    return {
-      body: file,
-    };
+
+    if (!fs.existsSync(responsePath)) {
+      logger.logError('Response file does not exist', { responsePath });
+
+      return null;
+    } else {
+      logger.logInfo('Returning response file', { responsePath });
+
+      const file = fs.readFileSync(responsePath, 'utf8');
+
+      return {
+        body: file,
+      };
+    }
   };
 
   mockServerClient('mockServer', 1080)
