@@ -44,7 +44,10 @@ async function mockserver() {
     const roleMappings = {
       user: 1, // Internal user
       officer: 2,
-      externalUser: 4,
+      reviewer: 3,
+      internalUser: 4, //Internal user 2
+      externalUser: 5,
+      secretary: 6
     };
 
     let responsePath;
@@ -96,11 +99,19 @@ async function mockserver() {
        * This will match user id of test users in the database form e2e cypress
        * initialDBData users.  
        */
-      if (match[1] === 1 || match[1] === 4) {
+      if (match[1] === '1' || match[1] === '2' || match[1] === '3' || match[1] === '4' || match[1] === '5' || match['1'] === '6') {
         responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml';
       } else {
         responsePath = 'src/responses/user/notEmptyResponse' + '.xml';
       }
+    }
+
+    if (
+      method === 'getBasicPeopleDetailsFromSurname' &&
+      requestXml.includes('<Surname>')
+    ) {
+      const match = requestXml.match('<Surname>(.*?)<');
+      responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml';
     }
 
     if (responsePath === null || responsePath === undefined) {
@@ -113,6 +124,7 @@ async function mockserver() {
       return null;
     } else {
       logger.logInfo('Returning response file', { responsePath });
+      logger.logInfo('Returningfrom request', { method });
 
       const file = fs.readFileSync(responsePath, 'utf8');
 
