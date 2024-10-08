@@ -111,7 +111,13 @@ async function mockserver() {
       requestXml.includes('<Surname>')
     ) {
       const match = requestXml.match('<Surname>(.*?)<');
-      responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml';
+      if(match[1] == 'Carlsson' || match[1] == 'Beckley' || match[1] == 'Nilsson'){
+        responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml';
+      }
+      else{
+        responsePath = 'src/responses/user/' + method + '.xml';
+      }
+      
     }
 
     if (responsePath === null || responsePath === undefined) {
