@@ -111,7 +111,19 @@ async function mockserver() {
       requestXml.includes('<Surname>')
     ) {
       const match = requestXml.match('<Surname>(.*?)<');
-      responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml';
+      if(('carlsson').startsWith(match[1].toLowerCase())){
+        responsePath = 'src/responses/user/' + method + '/Carlsson.xml';
+      }
+      else if(('beckley').startsWith(match[1].toLowerCase())){
+        responsePath = 'src/responses/user/' + method + '/Beckley.xml';
+      }
+      else if (('nilsson').startsWith(match[1].toLowerCase())){
+        responsePath = 'src/responses/user/' + method + '/Nilsson.xml';
+      }
+      else{
+        responsePath = 'src/responses/user/' + method + '.xml';
+      }
+      
     }
 
     if (responsePath === null || responsePath === undefined) {
