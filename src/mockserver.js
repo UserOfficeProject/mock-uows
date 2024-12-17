@@ -43,10 +43,9 @@ async function mockserver() {
     let requestBody;
 
     try {
-      // Parse JSON body
       console.log("request body before parse = ", request.body);
       requestBody = JSON.parse(request.body);
-      console.log("Request body after parse = ", requestBody)
+      console.log("Request body after parse = ", requestBody);
     } catch (error) {
       logger.logError('Invalid JSON in request body', { error });
       return {
@@ -55,27 +54,42 @@ async function mockserver() {
       };
     }
 
-    // Handle different REST API methods
-    if (requestBody.method === 'getBasicPersonDetails') {
-      const { userNumber } = requestBody;
-      if (userNumber) {
-        responsePath = `src/responses/user/getbasicpersondetails/${userNumber}.json`;
-      }
-    } else if (requestBody.method === 'getSearchableBasicPeopleDetails') {
-      const { userNumbers } = requestBody;
-      if (userNumbers && Array.isArray(userNumbers)) {
-        responsePath = `src/responses/user/getsearchablebasicpersondetails/${userNumbers.join('-')}.json`;
-      }
-    } else if (requestBody.method === 'getPersonDetailsFromSessionId') {
-      const { sessionId } = requestBody;
-      if (sessionId) {
-        responsePath = `src/responses/user/getpersondetailsfromsessionid/${sessionId}.json`;
-      }
-    } else if (requestBody.method === 'getRolesForUser') {
-      const { userNumber } = requestBody;
-      if (userNumber) {
-        responsePath = `src/responses/user/getrolesforuser/${userNumber}.json`;
-      }
+    switch (requestBody.method) {
+      case 'getBasicPersonDetails':
+        const { userNumber } = requestBody;
+        if (userNumber) {
+          responsePath = `src/responses/user/getbasicpersondetails/${userNumber}.json`;
+        }
+        break;
+      case 'getSearchableBasicPeopleDetails':
+        const { userNumbers } = requestBody;
+        if (userNumbers && Array.isArray(userNumbers)) {
+          responsePath = `src/responses/user/getsearchablebasicpersondetails/${userNumbers.join('-')}.json`;
+        }
+        break;
+      case 'getPersonDetailsFromSessionId':
+        const { sessionId } = requestBody;
+        if (sessionId) {
+          responsePath = `src/responses/user/getpersondetailsfromsessionid/${sessionId}.json`;
+        }
+        break;
+      case 'getRolesForUser':
+        const { userNumber: userRolesNumber } = requestBody;
+        if (userRolesNumber) {
+          responsePath = `src/responses/user/getrolesforuser/${userRolesNumber}.json`;
+        }
+        break;
+      case 'getLoginFromSessionId':
+        const { loginSessionId } = requestBody;
+        if (loginSessionId) {
+          responsePath = `src/responses/user/getloginfromsessionid/${loginSessionId}.json`;
+        }
+        break;
+      default:
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ error: 'Unknown method' }),
+        };
     }
 
     if (!responsePath || !fs.existsSync(responsePath)) {
@@ -88,15 +102,19 @@ async function mockserver() {
 
     const file = fs.readFileSync(responsePath, 'utf8');
     logger.logInfo('Returning response file', { responsePath });
-    
+
     return {
       statusCode: 200,
       body: file,
     };
   };
 
-  // Define the REST endpoints
-  const endpoints = ['/ws/UserOfficeWebService'];
+  const endpoints = [
+    '/users-service/UserOfficeWebService/basicpersondetails',
+    '/users-service/UserOfficeWebService/searchablepersondetails',
+    '/users-service/UserOfficeWebService/getrolesforuser',
+    '/users-service/UserOfficeWebService/getloginfromsessionid'
+  ];
 
   endpoints.forEach((endpoint) => {
     mockServerClient('mockServer', 1080)
@@ -109,8 +127,8 @@ async function mockserver() {
         { unlimited: true }
       )
       .then(
-        () => logger.logInfo('Created callback for POST requests', {}),
-        (error) => logger.logError('Error while creating callback for POST requests', { error })
+        () => logger.logInfo(`Created callback for ${endpoint}`, {}),
+        (error) => logger.logError(`Error while creating callback for ${endpoint}`, { error })
       );
   });
 }
