@@ -110,10 +110,10 @@ async function mockserver() {
   };
 
   const endpoints = [
-    '/users-service/UserOfficeWebService/basicpersondetails',
-    '/users-service/UserOfficeWebService/searchablepersondetails',
-    '/users-service/UserOfficeWebService/getrolesforuser',
-    '/users-service/UserOfficeWebService/getloginfromsessionid'
+    '/users-service/basicpersondetails',
+    '/users-service/searchablepersondetails',
+    '/users-service/getrolesforuser',
+    '/users-service/getloginfromsessionid'
   ];
 
   endpoints.forEach((endpoint) => {
