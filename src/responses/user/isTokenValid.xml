@@ -1,7 +1,0 @@
-{
-    "isTokenValidResponse": {
-        "return": "true",
-        "_xmlns:ns2": "http://webservice.UserOffice.stfc.com/",
-        "__prefix": "ns2"
-    },
-}

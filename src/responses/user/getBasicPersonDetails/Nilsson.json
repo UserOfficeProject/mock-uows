@@ -1,16 +1,18 @@
-{
-	"country": "UNITED KINGDOM",
-	"deptAcronym": "SCD",
-	"deptName": "Scientific Computing",
-	"displayName": "Nils",
-	"email": "nils@ess.se",
-	"establishmentId": "5",
-	"familyName": "Nilsson",
-	"firstNameKnownAs": "Nils",
-	"fullName": "Mr Nils Nilsson",
-	"givenName": "Nils",
-	"initials": "N",
-	"orgName": "STFC",
-	"title": "Mr",
-	"userNumber": "3"
-}
+[
+	{
+		"country": "UNITED KINGDOM",
+		"deptAcronym": "SCD",
+		"deptName": "Scientific Computing",
+		"displayName": "Nils",
+		"email": "nils@ess.se",
+		"establishmentId": "5",
+		"familyName": "Nilsson",
+		"firstNameKnownAs": "Nils",
+		"fullName": "Mr Nils Nilsson",
+		"givenName": "Nils",
+		"initials": "N",
+		"orgName": "STFC",
+		"title": "Mr",
+		"userNumber": "3"
+	}
+]

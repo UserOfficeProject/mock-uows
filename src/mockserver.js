@@ -35,80 +35,68 @@ async function mockserver() {
   }
 
   const respondToPostRequest = function (request) {
-    const { method, path, body } = request;
-
-    if (method !== 'POST') {
-      return {
-        statusCode: 405,
-        body: JSON.stringify({ error: 'Method not allowed' }),
-      };
+    if (request.method !== 'POST') {
+      return;
     }
+
+    let responsePath;
+    let requestBody;
 
     try {
-      const requestBody = JSON.parse(body);
-      let responsePath;
-
-      switch (path) {
-        case '/users-service/getbasicpersondetails':
-          if (requestBody.userNumber) {
-            responsePath = `src/responses/user/getbasicpersondetails/${requestBody.userNumber}.json`;
-          }
-          break;
-
-        case '/users-service/getsearchablebasicpersondetails':
-          if (requestBody.userNumbers) {
-            responsePath = `src/responses/user/getsearchablebasicpersondetails/${requestBody.userNumbers}.json`;
-          }
-          break;
-
-        case '/users-service/getrolesforuser':
-          if (requestBody.userNumber) {
-            responsePath = `src/responses/user/getrolesforuser/${requestBody.userNumber}.json`;
-          }
-          break;
-
-        case '/users-service/getpersondetailsfromsessionid':
-          if (requestBody.sessionId) {
-            responsePath = `src/responses/user/getpersondetailsfromsessionid/${requestBody.sessionId}.json`;
-          }
-          break;
-
-        default:
-          return {
-            statusCode: 404,
-            body: JSON.stringify({ error: 'Endpoint not found' }),
-          };
-      }
-
-      if (!responsePath || !fs.existsSync(responsePath)) {
-        logger.logError('Response file does not exist', { responsePath });
-        return {
-          statusCode: 404,
-          body: JSON.stringify({ error: 'Resource not found' }),
-        };
-      }
-
-      const file = fs.readFileSync(responsePath, 'utf8');
-      logger.logInfo('Returning response file', { responsePath });
-      return {
-        statusCode: 200,
-        body: file,
-      };
+      // Parse JSON body
+      console.log("request body before parse = ", request.body);
+      requestBody = JSON.parse(request.body);
+      console.log("Request body after parse = ", requestBody)
     } catch (error) {
-      logger.logError('Error handling request', { error });
+      logger.logError('Invalid JSON in request body', { error });
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: 'Invalid request body' }),
+        body: JSON.stringify({ error: 'Invalid JSON in request body' }),
       };
     }
+
+    // Handle different REST API methods
+    if (requestBody.method === 'getBasicPersonDetails') {
+      const { userNumber } = requestBody;
+      if (userNumber) {
+        responsePath = `src/responses/user/getbasicpersondetails/${userNumber}.json`;
+      }
+    } else if (requestBody.method === 'getSearchableBasicPeopleDetails') {
+      const { userNumbers } = requestBody;
+      if (userNumbers && Array.isArray(userNumbers)) {
+        responsePath = `src/responses/user/getsearchablebasicpersondetails/${userNumbers.join('-')}.json`;
+      }
+    } else if (requestBody.method === 'getPersonDetailsFromSessionId') {
+      const { sessionId } = requestBody;
+      if (sessionId) {
+        responsePath = `src/responses/user/getpersondetailsfromsessionid/${sessionId}.json`;
+      }
+    } else if (requestBody.method === 'getRolesForUser') {
+      const { userNumber } = requestBody;
+      if (userNumber) {
+        responsePath = `src/responses/user/getrolesforuser/${userNumber}.json`;
+      }
+    }
+
+    if (!responsePath || !fs.existsSync(responsePath)) {
+      logger.logError('Response file does not exist', { responsePath });
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ error: 'Resource not found' }),
+      };
+    }
+
+    const file = fs.readFileSync(responsePath, 'utf8');
+    logger.logInfo('Returning response file', { responsePath });
+    
+    return {
+      statusCode: 200,
+      body: file,
+    };
   };
 
-  const endpoints = [
-    '/users-service/getbasicpersondetails',
-    '/users-service/getsearchablebasicpersondetails',
-    '/users-service/getrolesforuser',
-    '/users-service/getpersondetailsfromsessionid',
-  ];
+  // Define the REST endpoints
+  const endpoints = ['/ws/UserOfficeWebService'];
 
   endpoints.forEach((endpoint) => {
     mockServerClient('mockServer', 1080)
@@ -121,11 +109,8 @@ async function mockserver() {
         { unlimited: true }
       )
       .then(
-        () => logger.logInfo(`Created callback for POST ${endpoint}`, {}),
-        (error) =>
-          logger.logError(`Error while creating callback for ${endpoint}`, {
-            error,
-          })
+        () => logger.logInfo('Created callback for POST requests', {}),
+        (error) => logger.logError('Error while creating callback for POST requests', { error })
       );
   });
 }

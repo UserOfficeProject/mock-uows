@@ -1,18 +1,17 @@
 [
     {
         "country": "UNITED KINGDOM",
-        "deptAcronym": "SCD",
-        "deptName": "Scientific Computing",
+        "deptName": "ISIS",
         "displayName": "Benjamin Beckley",
         "email": "ben@inbox.com",
-        "establishmentId": "7",
+        "establishmentId": 7,
         "familyName": "Beckley",
-        "firstNameKnownAs": "Benjamin",
+        "firstNameKnownAs": "Ben",
         "fullName": "Mr Benjamin Beckley",
         "givenName": "Benjamin",
         "initials": "B",
         "orgName": "STFC",
         "title": "Mr",
-        "userNumber": "7"
+        "userNumber": 7
     }
 ]

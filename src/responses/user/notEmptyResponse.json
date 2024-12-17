@@ -1,0 +1,53 @@
+{
+  "users": [
+    {
+      "userNumber": 4,
+      "country": "UNITED KINGDOM",
+      "deptName": "ISIS",
+      "displayName": "Benjamin Beckley",
+      "email": "ben@inbox.com",
+      "establishmentId": 7,
+      "familyName": "Beckley",
+      "firstNameKnownAs": "Ben",
+      "fullName": "Mr Benjamin Beckley",
+      "givenName": "Benjamin",
+      "initials": "B",
+      "orgName": "STFC",
+      "title": "Mr"
+    },
+    {
+      "userNumber": 5,
+      "country": "UNITED KINGDOM",
+      "deptName": "ISIS",
+      "displayName": "Unverified email Placeholder",
+      "email": "unverified-user@example.com",
+      "establishmentId": 7,
+      "familyName": "Placeholder",
+      "firstNameKnownAs": "Unverified email",
+      "fullName": "Mr Unverified email Placeholder",
+      "givenName": "Unverified email",
+      "initials": "U",
+      "orgName": "STFC",
+      "title": "Mr"
+    },
+    {
+      "userNumber": 6,
+      "country": "UNITED KINGDOM",
+      "deptAcronym": "SCD",
+      "deptName": "Scientific Computing",
+      "displayName": "David Dawson",
+      "email": "david@teleworm.us",
+      "establishmentId": 5,
+      "familyName": "Dawson",
+      "fedId": "abc12345",
+      "firstNameKnownAs": "",
+      "fullName": "Mr David Dawson",
+      "givenName": "David",
+      "initials": "DD",
+      "mobilePhone": "08579366828",
+      "orgName": "STFC",
+      "status": "Undergraduate Student",
+      "title": "Mr"
+    }
+  ]
+}
