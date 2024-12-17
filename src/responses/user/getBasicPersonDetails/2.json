@@ -1,0 +1,29 @@
+{
+	"Envelope": {
+		"Body": {
+			"getBasicPeopleDetailsFromUserNumbersResponse": {
+				"return": {
+					"country": "UNITED KINGDOM",
+					"deptAcronym": "SCD",
+					"deptName": "Scientific Computing",
+					"displayName": "Anders Andersson",
+					"email": "Aaron_Harris49@gmail.com",
+					"establishmentId": "5",
+					"familyName": "Carlsson",
+					"firstNameKnownAs": "Carl",
+					"fullName": "Mr Carl Carlsson",
+					"givenName": "Carl",
+					"initials": "C",
+					"orgName": "STFC",
+					"title": "Mr",
+					"userNumber": "2"
+				},
+				"_xmlns:ns2": "http://webservice.UserOffice.stfc.com/",
+				"__prefix": "ns2"
+			},
+			"__prefix": "soap"
+		},
+		"_xmlns:soap": "http://schemas.xmlsoap.org/soap/envelope/",
+		"__prefix": "soap"
+	}
+}
