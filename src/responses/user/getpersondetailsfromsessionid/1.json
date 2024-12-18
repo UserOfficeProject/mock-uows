@@ -1,9 +1,7 @@
-[
-	{
-		"userId": "1",
-		"sessionId": "user",
-		"lastAccessTime": "2024-12-18T15:07:24.402605019Z",
-		"loginType": "LDAP",
-		"comments": null
-	}
-]
+{
+	"userId": "1",
+	"sessionId": "user",
+	"lastAccessTime": "2024-12-18T15:07:24.402605019Z",
+	"loginType": "LDAP",
+	"comments": null
+}

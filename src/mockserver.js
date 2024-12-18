@@ -61,7 +61,7 @@ async function mockserver() {
         }
         if (emails) {
           responsePath = `src/responses/user/getbasicpersondetails/${emails[0]}.json`;
-        }
+        } 
         break;
       // Break
       case '/users-service/v1/basic-person-details/searchable':
@@ -84,10 +84,14 @@ async function mockserver() {
         const RoleTest = roleMappings[request.path.replace('/users-service/v1/sessions/', '')];
         responsePath = `src/responses/user/getpersondetailsfromsessionid/${RoleTest}.json`;
         break;
-      case '/users-service/v1/role':
-        if (userNumber) {
-          responsePath = `src/responses/user/getrolesforuser/${userNumber}.json`;
-        }
+      case '/users-service/v1/role/1':
+      case '/users-service/v1/role/2':
+      case '/users-service/v1/role/3':
+      case '/users-service/v1/role/4':
+      case '/users-service/v1/role/5':
+      case '/users-service/v1/role/6':
+        const RoleDHSH = request.path.replace('/users-service/v1/role/', '');
+        responsePath = `src/responses/user/getrolesforuser/${RoleDHSH}.json`;
         break;
       default:
         return {
@@ -109,6 +113,9 @@ async function mockserver() {
 
     return {
       statusCode: 200,
+      headers: {
+        'Content-Type': ['application/json'],
+      },
       body: file,
     };
   };
@@ -116,7 +123,12 @@ async function mockserver() {
   const endpoints = [
     '/users-service/v1/basic-person-details',
     '/users-service/v1/basic-person-details/searchable',
-    '/users-service/v1/role',
+    '/users-service/v1/role/1',
+    '/users-service/v1/role/2',
+    '/users-service/v1/role/3',
+    '/users-service/v1/role/4',
+    '/users-service/v1/role/5',
+    '/users-service/v1/role/6',
     '/users-service/v1/sessions/user',
     '/users-service/v1/sessions/officer',
     '/users-service/v1/sessions/reviewer',
