@@ -29,57 +29,64 @@ async function isMockServerRunning() {
 async function mockserver() {
   const mockServerReady = await isMockServerRunning();
 
+  const roleMappings = {
+    user: 1, // Internal user
+    officer: 2,
+    reviewer: 3,
+    internalUser: 4, //Internal user 2
+    externalUser: 5,
+    secretary: 6
+  };
+
   if (!mockServerReady) {
     logger.logError('Mock server failed to start within the specified time.');
     return;
   }
 
-  const respondToPostRequest = function (request) {
+  const respondToRequest = function (request) {
+    logger.logInfo('Callback triggered with request', { request });
 
-    logger.logInfo("Request = ", {request});
+    let responsePath = null;
 
-    let responsePath;
-    let requestBody;
-
-    try {
-      requestBody = JSON.parse(request.body);
-    } catch (error) {
-      logger.logError('Invalid JSON in request body', { error });
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: 'Invalid JSON in request body' }),
-      };
-    }
-
-    switch (requestBody.method) {
-      case 'basic-person-details':
-        const { userNumber } = requestBody;
+    switch (request.path) {
+      case '/users-service/v1/basic-person-details':
+        const userNumber = request.queryStringParameters.userNumbers;
+        const surname = request.queryStringParameters.surname;
+        const emails = request.queryStringParameters.emails;
         if (userNumber) {
-          responsePath = `src/responses/user/getbasicpersondetails/${userNumber}.json`;
+          responsePath = `src/responses/user/getbasicpersondetails/${userNumber[0]}.json`;
+        }
+        if (surname) {
+          responsePath = `src/responses/user/getbasicpersondetails/${surname}.json`;
+        }
+        if (emails) {
+          responsePath = `src/responses/user/getbasicpersondetails/${emails[0]}.json`;
         }
         break;
-      case 'getSearchableBasicPeopleDetails':
-        const { userNumbers } = requestBody;
-        if (userNumbers && Array.isArray(userNumbers)) {
-          responsePath = `src/responses/user/getsearchablebasicpersondetails/${userNumbers.join('-')}.json`;
+      // Break
+      case '/users-service/v1/basic-person-details/searchable':
+        if (userNumber) {
+          responsePath = `src/responses/user/getbasicpersondetails/${userNumber[0]}.json`;
+        }
+        if (surname) {
+          responsePath = `src/responses/user/getbasicpersondetails/${surname}.json`;
+        }
+        if (emails) {
+          responsePath = `src/responses/user/getbasicpersondetails/${emails[0]}.json`;
         }
         break;
-      case 'getPersonDetailsFromSessionId':
-        const { sessionId } = requestBody;
-        if (sessionId) {
-          responsePath = `src/responses/user/getpersondetailsfromsessionid/${sessionId}.json`;
-        }
+      case '/users-service/v1/sessions/user':
+      case '/users-service/v1/sessions/officer':
+      case '/users-service/v1/sessions/reviewer':
+      case '/users-service/v1/sessions/internalUser':
+      case '/users-service/v1/sessions/externalUser':
+      case '/users-service/v1/sessions/secretary':
+        const RoleTest = roleMappings[request.path.replace('/users-service/v1/sessions/', '')];
+        responsePath = `src/responses/user/getpersondetailsfromsessionid/${RoleTest}.json`;
         break;
-      case 'getRolesForUser':
-        const { userNumber: userRolesNumber } = requestBody;
-        if (userRolesNumber) {
-          responsePath = `src/responses/user/getrolesforuser/${userRolesNumber}.json`;
-        }
-        break;
-      case 'getLoginFromSessionId':
-        const { loginSessionId } = requestBody;
-        if (loginSessionId) {
-          responsePath = `src/responses/user/getloginfromsessionid/${loginSessionId}.json`;
+      case '/users-service/v1/role':
+        if (userNumber) {
+          responsePath = `src/responses/user/getrolesforuser/${userNumber}.json`;
         }
         break;
       default:
@@ -110,16 +117,22 @@ async function mockserver() {
     '/users-service/v1/basic-person-details',
     '/users-service/v1/basic-person-details/searchable',
     '/users-service/v1/role',
-    '/users-service/v1/sessions'
+    '/users-service/v1/sessions/user',
+    '/users-service/v1/sessions/officer',
+    '/users-service/v1/sessions/reviewer',
+    '/users-service/v1/sessions/internalUser',
+    '/users-service/v1/sessions/externalUser',
+    '/users-service/v1/sessions/secretary'
   ];
 
   endpoints.forEach((endpoint) => {
     mockServerClient('mockServer', 1080)
       .mockWithCallback(
         {
-          path: endpoint
+          path: endpoint,
+          method: 'GET',
         },
-        respondToPostRequest,
+        respondToRequest,
         { unlimited: true }
       )
       .then(
