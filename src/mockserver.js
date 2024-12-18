@@ -35,17 +35,14 @@ async function mockserver() {
   }
 
   const respondToPostRequest = function (request) {
-    if (request.method !== 'POST') {
-      return;
-    }
+
+    logger.logInfo("Request = ", {request});
 
     let responsePath;
     let requestBody;
 
     try {
-      console.log("request body before parse = ", request.body);
       requestBody = JSON.parse(request.body);
-      console.log("Request body after parse = ", requestBody);
     } catch (error) {
       logger.logError('Invalid JSON in request body', { error });
       return {
@@ -55,7 +52,7 @@ async function mockserver() {
     }
 
     switch (requestBody.method) {
-      case 'getBasicPersonDetails':
+      case 'basic-person-details':
         const { userNumber } = requestBody;
         if (userNumber) {
           responsePath = `src/responses/user/getbasicpersondetails/${userNumber}.json`;
@@ -110,24 +107,23 @@ async function mockserver() {
   };
 
   const endpoints = [
-    '/users-service/basicpersondetails',
-    '/users-service/searchablepersondetails',
-    '/users-service/getrolesforuser',
-    '/users-service/getloginfromsessionid'
+    '/users-service/v1/basic-person-details',
+    '/users-service/v1/basic-person-details/searchable',
+    '/users-service/v1/role',
+    '/users-service/v1/sessions'
   ];
 
   endpoints.forEach((endpoint) => {
     mockServerClient('mockServer', 1080)
       .mockWithCallback(
         {
-          method: 'POST',
-          path: endpoint,
+          path: endpoint
         },
         respondToPostRequest,
         { unlimited: true }
       )
       .then(
-        () => logger.logInfo(`Created callback for ${endpoint}`, {}),
+        () => logger.logInfo(`Newest change Created callback for ${endpoint}`, {}),
         (error) => logger.logError(`Error while creating callback for ${endpoint}`, { error })
       );
   });
