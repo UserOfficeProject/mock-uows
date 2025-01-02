@@ -93,6 +93,9 @@ async function mockserver() {
         const RoleDHSH = request.path.replace('/users-service/v1/role/', '');
         responsePath = `src/responses/user/getrolesforuser/${RoleDHSH}.json`;
         break;
+      case '/users-service/v1/token':
+        responsePath = 'src/responses/user/isTokenValid.json'
+        break;
       default:
         return {
           statusCode: 400,
@@ -134,7 +137,8 @@ async function mockserver() {
     '/users-service/v1/sessions/reviewer',
     '/users-service/v1/sessions/internalUser',
     '/users-service/v1/sessions/externalUser',
-    '/users-service/v1/sessions/secretary'
+    '/users-service/v1/sessions/secretary',
+    '/users-service/v1/token'
   ];
 
   endpoints.forEach((endpoint) => {
@@ -142,7 +146,6 @@ async function mockserver() {
       .mockWithCallback(
         {
           path: endpoint,
-          method: 'GET',
         },
         respondToRequest,
         { unlimited: true }
