@@ -1,19 +1,18 @@
 [
 	{
-	  "userNumber": "12345",
-	  "country": "fake",
-	  "deptName": "fake",
-	  "displayName": "fake",
-	  "email": "valid",
-	  "establishmentId": "fake",
-	  "familyName": "fake",
-	  "firstNameKnownAs": "fake",
-	  "fullName": "fake",
-	  "givenName": "fake",
-	  "initials": "fake",
-	  "orgName": "fake",
-	  "orgId": "fake",
-	  "title": "fake",
-	  "workPhone": "fake"
+		"country": "UNITED KINGDOM",
+		"deptAcronym": "SCD",
+		"deptName": "Scientific Computing",
+		"displayName": "Carl Carlsson",
+		"email": "Javon4@hotmail.com",
+		"establishmentId": "5",
+		"familyName": "Carlsson",
+		"firstNameKnownAs": "Carl",
+		"fullName": "Mr Carl Carlsson",
+		"givenName": "Carl",
+		"initials": "C",
+		"orgName": "STFC",
+		"title": "Mr",
+		"userNumber": "0"
 	}
 ]
