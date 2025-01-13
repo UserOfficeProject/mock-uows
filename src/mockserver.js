@@ -48,22 +48,12 @@ async function mockserver() {
 
     let responsePath = null;
 
+    const userNumber = request.queryStringParameters?.userNumbers;
+    const surname = request.queryStringParameters?.surname;
+    const emails = request.queryStringParameters?.emails;
+
     switch (request.path) {
       case '/users-service/v1/basic-person-details':
-        const userNumber = request.queryStringParameters.userNumbers;
-        const surname = request.queryStringParameters.surname;
-        const emails = request.queryStringParameters.emails;
-        if (userNumber) {
-          responsePath = `src/responses/user/getbasicpersondetails/${userNumber[0]}.json`;
-        }
-        if (surname) {
-          responsePath = `src/responses/user/getbasicpersondetails/${surname}.json`;
-        }
-        if (emails) {
-          responsePath = `src/responses/user/getbasicpersondetails/${emails[0]}.json`;
-        } 
-        break;
-      // Break
       case '/users-service/v1/basic-person-details/searchable':
         if (userNumber) {
           responsePath = `src/responses/user/getbasicpersondetails/${userNumber[0]}.json`;
