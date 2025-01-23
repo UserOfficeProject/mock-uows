@@ -65,11 +65,21 @@ async function mockserver() {
           responsePath = `src/responses/user/getbasicpersondetails/${emails[0]}.json`;
         }
         break;
-      case '/users-service/v1/sessions/':
+      case '/users-service/v1/sessions/user':
+      case '/users-service/v1/sessions/officer':
+      case '/users-service/v1/sessions/reviewer':
+      case '/users-service/v1/sessions/internalUser':
+      case '/users-service/v1/sessions/externalUser':
+      case '/users-service/v1/sessions/secretary':
         const RoleTest = roleMappings[request.path.replace('/users-service/v1/sessions/', '')];
         responsePath = `src/responses/user/getpersondetailsfromsessionid/${RoleTest}.json`;
         break;
-      case '/users-service/v1/role/':
+      case '/users-service/v1/role/1':
+      case '/users-service/v1/role/2':
+      case '/users-service/v1/role/3':
+      case '/users-service/v1/role/4':
+      case '/users-service/v1/role/5':
+      case '/users-service/v1/role/6':
         const RoleDHSH = request.path.replace('/users-service/v1/role/', '');
         responsePath = `src/responses/user/getrolesforuser/${RoleDHSH}.json`;
         break;
@@ -106,8 +116,19 @@ async function mockserver() {
   const endpoints = [
     '/users-service/v1/basic-person-details',
     '/users-service/v1/basic-person-details/searchable',
-    '/users-service/v1/role/',
-    '/users-service/v1/sessions/'
+    '/users-service/v1/role/1',
+    '/users-service/v1/role/2',
+    '/users-service/v1/role/3',
+    '/users-service/v1/role/4',
+    '/users-service/v1/role/5',
+    '/users-service/v1/role/6',
+    '/users-service/v1/sessions/user',
+    '/users-service/v1/sessions/officer',
+    '/users-service/v1/sessions/reviewer',
+    '/users-service/v1/sessions/internalUser',
+    '/users-service/v1/sessions/externalUser',
+    '/users-service/v1/sessions/secretary',
+    '/users-service/v1/token'
   ];
 
   endpoints.forEach((endpoint) => {
