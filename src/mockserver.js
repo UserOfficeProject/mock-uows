@@ -45,44 +45,46 @@ async function mockserver() {
 
   const respondToRequest = function (request) {
     logger.logInfo('Callback triggered with request', { request });
-
+  
     let responsePath = null;
-
+  
     const userNumber = request.queryStringParameters?.userNumbers;
     const surname = request.queryStringParameters?.surname;
     const emails = request.queryStringParameters?.emails;
-
-    if (request.path === '/users-service/v1/basic-person-details' || '/users-service/v1/basic-person-details/searchable') {
-        if (userNumber) {
-          responsePath = `src/responses/user/getbasicpersondetails/${userNumber[0]}.json`;
-        }
-        if (surname) {
-          responsePath = `src/responses/user/getbasicpersondetails/${surname}.json`;
-        }
-        if (emails) {
-          responsePath = `src/responses/user/getbasicpersondetails/${emails[0]}.json`;
-        }
+  
+    if (request.path === '/users-service/v1/basic-person-details' || request.path === '/users-service/v1/basic-person-details/searchable') {
+      if (userNumber) {
+        responsePath = `src/responses/user/getbasicpersondetails/${userNumber[0]}.json`;
+      }
+      if (surname) {
+        responsePath = `src/responses/user/getbasicpersondetails/${surname}.json`;
+      }
+      if (emails) {
+        responsePath = `src/responses/user/getbasicpersondetails/${emails[0]}.json`;
+      }
     }
-    if (request.path.startsWith('/users-service/v1/sessions/')){
-        const RoleTest = roleMappings[request.path.replace('/users-service/v1/sessions/', '')];
-        responsePath = `src/responses/user/getpersondetailsfromsessionid/${RoleTest}.json`;
+  
+    else if (request.path.startsWith('/users-service/v1/sessions/')) {
+      const SessionUser = roleMappings[request.path.replace('/users-service/v1/sessions/', '')];
+      responsePath = `src/responses/user/getpersondetailsfromsessionid/${SessionUser}.json`;
     }
-    if (request.path.startsWith('/users-service/v1/role/')){
-        const RoleDHSH = request.path.replace('/users-service/v1/role/', '');
-        responsePath = `src/responses/user/getrolesforuser/${RoleDHSH}.json`;
+  
+    else if (request.path.startsWith('/users-service/v1/role/')) {
+      const Role = request.path.replace('/users-service/v1/role/', '');
+      responsePath = `src/responses/user/getrolesforuser/${Role}.json`;
     }
-    if (request.path === '/users-service/v1/token'){
-        responsePath = 'src/responses/user/isTokenValid.json'
+  
+    else if (request.path === '/users-service/v1/token') {
+      responsePath = 'src/responses/user/isTokenValid.json';
     }
-    else{
+  
+    else {
       return {
         statusCode: 400,
         body: JSON.stringify({ error: 'Unknown method' }),
       };
     }
-      
-    
-
+  
     if (!responsePath || !fs.existsSync(responsePath)) {
       logger.logError('Response file does not exist', { responsePath });
       return {
@@ -90,10 +92,10 @@ async function mockserver() {
         body: JSON.stringify({ error: 'Resource not found' }),
       };
     }
-
+  
     const file = fs.readFileSync(responsePath, 'utf8');
     logger.logInfo('Returning response file', { responsePath });
-
+  
     return {
       statusCode: 200,
       headers: {
