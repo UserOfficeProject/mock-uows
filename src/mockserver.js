@@ -65,7 +65,7 @@ async function mockserver() {
           responsePath = `src/responses/user/getbasicpersondetails/${emails[0]}.json`;
         }
         break;
-      case '/users-service/v1/sessions/user':
+      case '/users-service/v1/sessions/':
         const RoleTest = roleMappings[request.path.replace('/users-service/v1/sessions/', '')];
         responsePath = `src/responses/user/getpersondetailsfromsessionid/${RoleTest}.json`;
         break;
