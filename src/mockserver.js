@@ -120,6 +120,7 @@ async function mockserver() {
     '/users-service/v1/sessions/secretary',
     '/users-service/v1/token'
   ];
+  
 
   endpoints.forEach((endpoint) => {
     mockServerClient('mockServer', 1080)
