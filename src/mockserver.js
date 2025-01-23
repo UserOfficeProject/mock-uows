@@ -52,9 +52,7 @@ async function mockserver() {
     const surname = request.queryStringParameters?.surname;
     const emails = request.queryStringParameters?.emails;
 
-    switch (request.path) {
-      case '/users-service/v1/basic-person-details':
-      case '/users-service/v1/basic-person-details/searchable':
+    if (request.path === '/users-service/v1/basic-person-details' || '/users-service/v1/basic-person-details/searchable') {
         if (userNumber) {
           responsePath = `src/responses/user/getbasicpersondetails/${userNumber[0]}.json`;
         }
@@ -64,34 +62,26 @@ async function mockserver() {
         if (emails) {
           responsePath = `src/responses/user/getbasicpersondetails/${emails[0]}.json`;
         }
-        break;
-      case '/users-service/v1/sessions/user':
-      case '/users-service/v1/sessions/officer':
-      case '/users-service/v1/sessions/reviewer':
-      case '/users-service/v1/sessions/internalUser':
-      case '/users-service/v1/sessions/externalUser':
-      case '/users-service/v1/sessions/secretary':
+    }
+    if (request.path.startsWith('/users-service/v1/sessions/')){
         const RoleTest = roleMappings[request.path.replace('/users-service/v1/sessions/', '')];
         responsePath = `src/responses/user/getpersondetailsfromsessionid/${RoleTest}.json`;
-        break;
-      case '/users-service/v1/role/1':
-      case '/users-service/v1/role/2':
-      case '/users-service/v1/role/3':
-      case '/users-service/v1/role/4':
-      case '/users-service/v1/role/5':
-      case '/users-service/v1/role/6':
+    }
+    if (request.path.startsWith('/users-service/v1/role/')){
         const RoleDHSH = request.path.replace('/users-service/v1/role/', '');
         responsePath = `src/responses/user/getrolesforuser/${RoleDHSH}.json`;
-        break;
-      case '/users-service/v1/token':
-        responsePath = 'src/responses/user/isTokenValid.json'
-        break;
-      default:
-        return {
-          statusCode: 400,
-          body: JSON.stringify({ error: 'Unknown method' }),
-        };
     }
+    if (request.path === '/users-service/v1/token'){
+        responsePath = 'src/responses/user/isTokenValid.json'
+    }
+    else{
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Unknown method' }),
+      };
+    }
+      
+    
 
     if (!responsePath || !fs.existsSync(responsePath)) {
       logger.logError('Response file does not exist', { responsePath });
