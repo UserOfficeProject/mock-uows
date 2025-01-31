@@ -1,0 +1,21 @@
+[
+	{
+		"country": "UNITED KINGDOM",
+		"deptAcronym": "SCD",
+		"deptName": "Scientific Computing",
+		"displayName": "instr.sci1",
+		"email": "ben@inbox.com",
+		"establishmentId": "5",
+		"familyName": "Scientist1",
+		"fedId": "puf57046",
+		"firstNameKnownAs": "Ben",
+		"fullName": "Mr Instrument 1 Scientist1",
+		"givenName": "Instrument",
+		"initials": "B",
+		"mobilePhone": "085793668438",
+		"orgName": "None STFC",
+		"status": "Undergraduate Student",
+		"title": "Mr",
+		"userNumber": "101"
+	}
+]

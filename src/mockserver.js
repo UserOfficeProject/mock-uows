@@ -1,5 +1,4 @@
 import fs from 'fs';
-
 import { promisify } from 'util';
 import { logger } from '@user-office-software/duo-logger';
 import { mockServerClient } from 'mockserver-client';
@@ -30,173 +29,115 @@ async function isMockServerRunning() {
 async function mockserver() {
   const mockServerReady = await isMockServerRunning();
 
+  const roleMappings = {
+    user: 1, // Internal user
+    officer: 2,
+    reviewer: 3,
+    internalUser: 4, //Internal user 2
+    externalUser: 5,
+    secretary: 6
+  };
+
   if (!mockServerReady) {
     logger.logError('Mock server failed to start within the specified time.');
-
     return;
   }
 
-  const respondToPostRequest = function (request) {
-    if (request.method !== 'POST') {
-      return;
-    }
-
-    const roleMappings = {
-      user: 1, // Internal user
-      officer: 2,
-      reviewer: 3,
-      internalUser: 4, //Internal user 2
-      externalUser: 5,
-      secretary: 6
-    };
-
-    let responsePath;
-    const requestXml = String(request.body.xml);
-    const match = requestXml.match('<tns:(.*?)>');
-    const method = match[1];
-
-    if (
-      method === 'getBasicPersonDetailsFromUserNumber' ||
-      method === 'getSearchableBasicPeopleDetailsFromUserNumbers'
-    ) {
-      let regexp = '';
-      method === 'getSearchableBasicPeopleDetailsFromUserNumbers'
-        ? (regexp = '<UserNumbers>(.*?)<')
-        : (regexp = '<UserNumber>(.*?)<');
-      const match = requestXml.match(regexp);
-
-      responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml';
-    }
-    if (method === 'getSearchableBasicPersonDetailsFromEmail') {
-      const match = requestXml.match('<Email>(.*?)<');
-
-      responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml';
-    }
-
-    if (
-      method === 'getPersonDetailsFromSessionId' &&
-      requestXml.includes('<SessionId>')
-    ) {
-      const match = requestXml.match("<SessionId>(.*?)<");
-      const sessionId = match[1].toString();
-      const userNumber = roleMappings[sessionId] || 1; // Default to 'user'
-
-      responsePath = `src/responses/user/${method}/${userNumber}.xml`;
-    }
-
-    if (method === 'getRolesForUser') {
-      const match = requestXml.match('<userNumber>(.*?)<');
-
-      responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml';
-    }
-
-    if (
-      method === 'getBasicPeopleDetailsFromUserNumbers' &&
-      requestXml.includes('<UserNumbers>')
-    ) {
-      const match = requestXml.match('<UserNumbers>(.*?)<');
-      /**
-       * This will match user id of test users in the database form e2e cypress
-       * initialDBData users.  
-       */
-      if (match[1] === '1' || match[1] === '2' || match[1] === '3' || match[1] === '4' || match[1] === '5' || match['1'] === '6') {
-        responsePath = 'src/responses/user/' + method + '/' + match[1] + '.xml';
-      } else {
-        responsePath = 'src/responses/user/notEmptyResponse' + '.xml';
+  const respondToRequest = function (request) {
+    logger.logInfo('Callback triggered with request', { request });
+  
+    let responsePath = null;
+  
+    const userNumber = request.queryStringParameters?.userNumbers;
+    const surname = request.queryStringParameters?.surname;
+    const emails = request.queryStringParameters?.emails;
+  
+    if (request.path === '/users-service/v1/basic-person-details' || request.path === '/users-service/v1/basic-person-details/searchable') {
+      if (userNumber) {
+        responsePath = `src/responses/user/getbasicpersondetails/${userNumber[0]}.json`;
+      }
+      if (surname) {
+        responsePath = `src/responses/user/getbasicpersondetails/${surname}.json`;
+      }
+      if (emails) {
+        responsePath = `src/responses/user/getbasicpersondetails/${emails[0]}.json`;
       }
     }
-
-    if (
-      method === 'getBasicPeopleDetailsFromSurname' &&
-      requestXml.includes('<Surname>')
-    ) {
-      const match = requestXml.match('<Surname>(.*?)<');
-      if(('carlsson').startsWith(match[1].toLowerCase())){
-        responsePath = 'src/responses/user/' + method + '/Carlsson.xml';
-      }
-      else if(('beckley').startsWith(match[1].toLowerCase())){
-        responsePath = 'src/responses/user/' + method + '/Beckley.xml';
-      }
-      else if (('nilsson').startsWith(match[1].toLowerCase())){
-        responsePath = 'src/responses/user/' + method + '/Nilsson.xml';
-      }
-      else{
-        responsePath = 'src/responses/user/' + method + '.xml';
-      }
-      
+  
+    else if (request.path.startsWith('/users-service/v1/sessions/')) {
+      const SessionUser = roleMappings[request.path.replace('/users-service/v1/sessions/', '')];
+      responsePath = `src/responses/user/getpersondetailsfromsessionid/${SessionUser}.json`;
     }
-
-    if (responsePath === null || responsePath === undefined) {
-      responsePath = 'src/responses/user/' + method + '.xml';
+  
+    else if (request.path.startsWith('/users-service/v1/role/')) {
+      const Role = request.path.replace('/users-service/v1/role/', '');
+      responsePath = `src/responses/user/getrolesforuser/${Role}.json`;
     }
-
-    if (!fs.existsSync(responsePath)) {
-      logger.logError('Response file does not exist', { responsePath });
-
-      return null;
-    } else {
-      logger.logInfo('Returning response file', { responsePath });
-      logger.logInfo('Returningfrom request', { method });
-
-      const file = fs.readFileSync(responsePath, 'utf8');
-
+  
+    else if (request.path === '/users-service/v1/token') {
+      responsePath = 'src/responses/user/isTokenValid.json';
+    }
+  
+    else {
       return {
-        body: file,
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Unknown method' }),
       };
     }
+  
+    if (!responsePath || !fs.existsSync(responsePath)) {
+      logger.logError('Response file does not exist', { responsePath });
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ error: 'Resource not found' }),
+      };
+    }
+  
+    const file = fs.readFileSync(responsePath, 'utf8');
+    logger.logInfo('Returning response file', { responsePath });
+  
+    return {
+      statusCode: 200,
+      headers: {
+        'Content-Type': ['application/json'],
+      },
+      body: file,
+    };
   };
 
-  mockServerClient('mockServer', 1080)
-    .mockWithCallback(
-      {
-        method: 'POST',
-        path: '/ws/UserOfficeWebService',
-      },
-      respondToPostRequest,
-      {
-        unlimited: true,
-      }
-    )
-    .then(
-      function () {
-        logger.logInfo('Created callback for POST requests', {});
-      },
-      function (error) {
-        logger.logError('Error while creating callback for POST requests', {
-          error,
-        });
-      }
-    );
+  const endpoints = [
+    '/users-service/v1/basic-person-details',
+    '/users-service/v1/basic-person-details/searchable',
+    '/users-service/v1/role/1',
+    '/users-service/v1/role/2',
+    '/users-service/v1/role/3',
+    '/users-service/v1/role/4',
+    '/users-service/v1/role/5',
+    '/users-service/v1/role/6',
+    '/users-service/v1/sessions/user',
+    '/users-service/v1/sessions/officer',
+    '/users-service/v1/sessions/reviewer',
+    '/users-service/v1/sessions/internalUser',
+    '/users-service/v1/sessions/externalUser',
+    '/users-service/v1/sessions/secretary',
+    '/users-service/v1/token'
+  ];
 
-  mockServerClient('mockServer', 1080)
-    .mockAnyResponse({
-      httpRequest: {
-        method: 'GET',
-        path: '/ws/UserOfficeWebService',
-      },
-      times: {
-        unlimited: true,
-      },
-      timeToLive: {
-        unlimited: true,
-      },
-      httpResponse: {
-        body: fs.readFileSync(
-          'src/responses/UserOfficeWebService.wsdl',
-          'utf8'
-        ),
-      },
-    })
-    .then(
-      function () {
-        logger.logInfo('Created callback for GET request', {});
-      },
-      function (error) {
-        logger.logError('Error while creating callback for GET request', {
-          error,
-        });
-      }
-    );
+  endpoints.forEach((endpoint) => {
+    mockServerClient('mockServer', 1080)
+      .mockWithCallback(
+        {
+          path: endpoint,
+        },
+        respondToRequest,
+        { unlimited: true }
+      )
+      .then(
+        () => logger.logInfo(`Newest change Created callback for ${endpoint}`, {}),
+        (error) => logger.logError(`Error while creating callback for ${endpoint}`, { error })
+      );
+  });
 }
+
 export { mockserver };
 mockserver();
