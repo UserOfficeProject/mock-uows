@@ -46,7 +46,7 @@ async function mockserver() {
   const respondToRequest = function (request) {
     logger.logInfo('Callback triggered with request', { request });
   
-    let responsePath = null;
+    let responsePaths = [];
   
     const userNumber = request.queryStringParameters?.userNumbers;
     const surname = request.queryStringParameters?.surname;
@@ -54,28 +54,32 @@ async function mockserver() {
   
     if (request.path === '/users-service/v1/basic-person-details' || request.path === '/users-service/v1/basic-person-details/searchable') {
       if (userNumber) {
-        responsePath = `src/responses/user/getbasicpersondetails/${userNumber[0]}.json`;
+        for (const un of userNumber) {
+          responsePaths.push(`src/responses/user/getbasicpersondetails/${un}.json`);
+        }
       }
       if (surname) {
-        responsePath = `src/responses/user/getbasicpersondetails/${surname}.json`;
+        responsePaths.push(`src/responses/user/getbasicpersondetails/${surname}.json`);
       }
       if (emails) {
-        responsePath = `src/responses/user/getbasicpersondetails/${emails[0]}.json`;
+        for (const email of emails) {
+          responsePaths.push(`src/responses/user/getbasicpersondetails/${email}.json`);
+        }
       }
     }
   
     else if (request.path.startsWith('/users-service/v1/sessions/')) {
       const SessionUser = roleMappings[request.path.replace('/users-service/v1/sessions/', '')];
-      responsePath = `src/responses/user/getpersondetailsfromsessionid/${SessionUser}.json`;
+      responsePaths.push(`src/responses/user/getpersondetailsfromsessionid/${SessionUser}.json`);
     }
   
     else if (request.path.startsWith('/users-service/v1/role/')) {
       const Role = request.path.replace('/users-service/v1/role/', '');
-      responsePath = `src/responses/user/getrolesforuser/${Role}.json`;
+      responsePaths.push(`src/responses/user/getrolesforuser/${Role}.json`);
     }
   
     else if (request.path === '/users-service/v1/token') {
-      responsePath = 'src/responses/user/isTokenValid.json';
+      responsePaths.push('src/responses/user/isTokenValid.json');
     }
   
     else {
@@ -85,16 +89,28 @@ async function mockserver() {
       };
     }
   
-    if (!responsePath || !fs.existsSync(responsePath)) {
-      logger.logError('Response file does not exist', { responsePath });
-      return {
-        statusCode: 404,
-        body: JSON.stringify({ error: 'Resource not found' }),
-      };
+    for (const responsePath of responsePaths) {
+      if (!responsePath || !fs.existsSync(responsePath)) {
+        logger.logError('Response file does not exist', { responsePath });
+        return {
+          statusCode: 404,
+          body: JSON.stringify({ error: 'Resource not found' }),
+        };
+      }
     }
-  
-    const file = fs.readFileSync(responsePath, 'utf8');
-    logger.logInfo('Returning response file', { responsePath });
+
+    var file;
+    if (responsePaths.length == 1) {
+      file = fs.readFileSync(responsePaths[0], 'utf8');
+    } else {
+      // Combine the json arrays when multiple user details are requested at once
+      file = JSON.stringify(
+        responsePaths
+          .map(path => JSON.parse(fs.readFileSync(path, 'utf8')))
+          .flat()
+      );
+    }
+    logger.logInfo('Returning response files', { responsePaths, file });
   
     return {
       statusCode: 200,
