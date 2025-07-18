@@ -81,6 +81,10 @@ async function mockserver() {
     else if (request.path === '/users-service/v1/token') {
       responsePaths.push('src/responses/user/isTokenValid.json');
     }
+
+    else if (request.path === '/users-service/v1/group-memberships/fap') {
+      responsePaths.push('src/responses/groupmemberships/fap/fapChair.json');
+    }
   
     else {
       return {
@@ -136,7 +140,8 @@ async function mockserver() {
     '/users-service/v1/sessions/internalUser',
     '/users-service/v1/sessions/externalUser',
     '/users-service/v1/sessions/secretary',
-    '/users-service/v1/token'
+    '/users-service/v1/token',
+    '/users-service/v1/group-memberships/fap',
   ];
 
   endpoints.forEach((endpoint) => {
