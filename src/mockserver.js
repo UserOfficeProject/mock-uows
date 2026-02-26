@@ -45,13 +45,13 @@ async function mockserver() {
 
   const respondToRequest = function (request) {
     logger.logInfo('Callback triggered with request', { request });
-  
+
     let responsePaths = [];
-  
+
     const userNumber = request.queryStringParameters?.userNumbers;
     const surname = request.queryStringParameters?.surname;
     const emails = request.queryStringParameters?.emails;
-  
+
     if (request.path === '/users-service/v1/basic-person-details' || request.path === '/users-service/v1/basic-person-details/searchable') {
       if (userNumber) {
         for (const un of userNumber) {
@@ -92,7 +92,7 @@ async function mockserver() {
         body: JSON.stringify({ error: 'Unknown method' }),
       };
     }
-  
+
     for (const responsePath of responsePaths) {
       if (!responsePath || !fs.existsSync(responsePath)) {
         logger.logError('Response file does not exist', { responsePath });
@@ -115,7 +115,7 @@ async function mockserver() {
       );
     }
     logger.logInfo('Returning response files', { responsePaths, file });
-  
+
     return {
       statusCode: 200,
       headers: {
@@ -128,6 +128,7 @@ async function mockserver() {
   const endpoints = [
     '/users-service/v1/basic-person-details',
     '/users-service/v1/basic-person-details/searchable',
+    '/users-service/v1/role/0',
     '/users-service/v1/role/1',
     '/users-service/v1/role/2',
     '/users-service/v1/role/3',
