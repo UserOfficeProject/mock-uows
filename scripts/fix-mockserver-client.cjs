@@ -1,7 +1,12 @@
 const fs = require('fs');
 
-const OLD = '/mock-server/mockserver/master/mockserver-core';
-const NEW = '/mock-server/mockserver-monorepo/master/mockserver/mockserver-core';
+const NO_OP = `var downloadCACert = function (tls, caCertPath, callback) {
+            if (tls && caCertPath) {
+                callback([fs.readFileSync(caCertPath, {encoding: 'utf-8'})]);
+            } else {
+                callback([]);
+            }
+        };`;
 
 const files = [
   'node_modules/mockserver-client/webSocketClient.js',
@@ -10,6 +15,14 @@ const files = [
 
 files.forEach((f) => {
   const content = fs.readFileSync(f, 'utf8');
-  fs.writeFileSync(f, content.replace(OLD, NEW));
-  console.log(`Fixed certificate URL in ${f}`);
+  const patched = content.replace(
+    /var downloadCACert = function \(tls, caCertPath, callback\) \{[\s\S]*?\n        \};/,
+    NO_OP
+  );
+  if (patched === content) {
+    console.error(`WARNING: no match found in ${f} — patch not applied`);
+    process.exit(1);
+  }
+  fs.writeFileSync(f, patched);
+  console.log(`Patched downloadCACert in ${f}`);
 });
