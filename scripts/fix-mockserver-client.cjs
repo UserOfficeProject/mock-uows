@@ -15,6 +15,10 @@ const files = [
 
 files.forEach((f) => {
   const content = fs.readFileSync(f, 'utf8');
+  if (content.includes(NO_OP)) {
+    console.log(`downloadCACert already patched in ${f}`);
+    return;
+  }
   const patched = content.replace(
     /var downloadCACert = function \(tls, caCertPath, callback\) \{[\s\S]*?\n        \};/,
     NO_OP
