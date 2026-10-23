@@ -9,5 +9,19 @@
     "correctness": "error",
     "suspicious": "warn"
   },
+  "rules": {
+    "typescript/no-floating-promises": [
+      "error",
+      {
+        "allowForKnownSafeCalls": [
+          {
+            "from": "package",
+            "package": "node:test",
+            "name": ["describe", "it", "test", "suite"]
+          }
+        ]
+      }
+    ]
+  },
   "ignorePatterns": ["dist"]
 }
