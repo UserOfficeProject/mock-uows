@@ -1,20 +1,41 @@
 {
   "name": "mockserver",
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "private": true,
   "description": "",
-  "main": "src/mockserver.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node --enable-source-maps dist/index.js",
+    "dev": "node --experimental-transform-types --watch src/index.ts",
+    "lint": "oxlint --type-aware",
+    "lint:fix": "oxlint --type-aware --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "LOG_LEVEL=error node --test",
+    "prepare": "husky",
     "postinstall": "node scripts/fix-mockserver-client.cjs"
   },
   "author": "",
-  "license": "ISC",
+  "license": "BSD",
   "dependencies": {
-    "@user-office-software/duo-logger": "^2.1.1",
-    "mockserver-client": "7.6.0"
+    "@faker-js/faker": "^10.6.0",
+    "@user-office-software/duo-logger": "^2.3.2",
+    "mockserver-client": "9.0.0"
   },
   "type": "module",
   "devDependencies": {
-    "prettier": "3.9.6"
+    "@types/node": "^24.19.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "mockserver-node": "^9.1.0",
+    "oxlint": "^1.89.0",
+    "oxlint-tsgolint": "^7.0.2004",
+    "prettier": "3.9.6",
+    "typescript": "^7.0.2"
+  },
+  "engines": {
+    "node": ">=24",
+    "npm": ">=11"
   }
 }
