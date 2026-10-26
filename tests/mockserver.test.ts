@@ -383,8 +383,9 @@ describe('POST /mock-server/users', () => {
         String(user?.title)
       )
     );
-    for (const field of ['givenName', 'familyName', 'orgName', 'country'])
+    for (const field of ['givenName', 'familyName', 'orgName', 'country']) {
       assert.ok(user?.[field], `${field} should be generated`);
+    }
   });
 
   it('numbers the users from startUserNumber and serves them', async () => {
@@ -407,6 +408,25 @@ describe('POST /mock-server/users', () => {
       type: 'SESSION_ID',
       identifier: user?.userNumber,
     });
+  });
+
+  it('gives the users the requested roles and groups and and serves them', async () => {
+    const roles = [{ name: 'User Officer' }, { name: 'FAP Member' }];
+    const groups = [
+      { groupName: 'Executive Fap Chair', comments: '' },
+      { groupName: 'Fap Chair', comments: '' },
+    ];
+    const response = await createUsers({ userCount: 2, roles, groups });
+    assert.equal(response.status, 201);
+    const users: { roles: unknown; groups: typeof groups }[] =
+      await response.json();
+    for (const user of users) {
+      assert.deepEqual(user.roles, roles);
+      assert.deepEqual(
+        user.groups.map(({ groupName, comments }) => ({ groupName, comments })),
+        groups
+      );
+    }
   });
 
   it('returns 400 when userCount is missing', async () => {

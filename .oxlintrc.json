@@ -10,6 +10,7 @@
     "suspicious": "warn"
   },
   "rules": {
+    "curly": ["error", "all"],
     "typescript/no-floating-promises": [
       "error",
       {

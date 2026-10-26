@@ -1,11 +1,6 @@
 interface GroupDTO {
   id: number;
   groupName: string;
-  comments: string;
-}
-interface GroupDetails {
-  id: number | string;
-  groupName: string;
   comments?: string | undefined;
 }
 
@@ -14,8 +9,8 @@ class Group {
   readonly groupName: string;
   readonly comments: string;
 
-  constructor({ id, groupName, comments = '' }: GroupDetails) {
-    this.id = Number(id);
+  constructor({ id, groupName, comments = '' }: GroupDTO) {
+    this.id = id;
     this.groupName = groupName;
     this.comments = comments;
   }
@@ -30,4 +25,4 @@ class Group {
 }
 
 export { Group };
-export type { GroupDTO, GroupDetails };
+export type { GroupDTO };

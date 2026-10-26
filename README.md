@@ -70,11 +70,11 @@ Email and surname lookups ignore case. FAP group changes are kept in memory unti
 
 ### Managing the mock
 
-| Method | Path                  | Description                                                      |
-| ------ | --------------------- | ---------------------------------------------------------------- |
-| `POST` | `/mock-server/users`  | Generates users: `{ "userCount": 100, "startUserNumber": 1000 }` |
-| `POST` | `/mock-server/reset`  | Removes generated users and reseeds from `users.json`            |
-| `GET`  | `/mock-server/status` | `{ "status": "ok", "totalUsers": 11 }`                           |
+| Method | Path                  | Description                                                     |
+| ------ | --------------------- | --------------------------------------------------------------- |
+| `POST` | `/mock-server/users`  | Generates users, optionally with the given `roles` and `groups` |
+| `POST` | `/mock-server/reset`  | Removes generated users and reseeds from `users.json`           |
+| `GET`  | `/mock-server/status` | `{ "status": "ok", "totalUsers": 11 }`                          |
 
 Generated users get random names and organisations, the email `email-<userNumber>@example.com`, the session ID `token-<userNumber>` and the `User` role. `startUserNumber` is optional and defaults to the number after the highest existing user. If any of the user numbers are taken, the request returns 409 and no users are created.
 
@@ -83,6 +83,23 @@ curl -X POST http://localhost:1080/mock-server/users \
   -H 'Content-Type: application/json' \
   -d '{"userCount": 100}'
 ```
+
+`roles` and `groups` are optional and every user in the request gets the same ones. `roles` replaces the default `User` role. Don't send group ids: a group gets the id it already has on another user, or the next free id if it is new.
+
+```sh
+curl -X POST http://localhost:1080/mock-server/users \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "userCount": 5,
+    "roles": [{ "name": "User Officer" }, { "name": "FAP Member" }],
+    "groups": [
+      { "groupName": "Executive Fap Chair", "comments": "" },
+      { "groupName": "Fap Chair", "comments": "" }
+    ]
+  }'
+```
+
+If `roles` or `groups` are not in this shape, or a group has an id, the request returns 400 and no users are created.
 
 These endpoints have no authentication, so only run the mock on test networks.
 

@@ -1,6 +1,6 @@
 import { logger } from '../utils/logger.ts';
 import type { MockServerClient } from 'mockserver-client';
-import { requestHandlerWrapper } from '../utils/utils.ts';
+import { requestHandlerWrapper, type Handler } from '../utils/utils.ts';
 import {
   getBasicPersonDetails,
   getRoles,
@@ -10,7 +10,6 @@ import {
   createUsers,
   resetUsers,
   getStatus,
-  type Handler,
 } from './handlers.ts';
 
 type HttpMethod = 'GET' | 'POST' | 'DELETE';

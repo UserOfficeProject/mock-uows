@@ -1,4 +1,5 @@
 import type { User } from '../models/User.ts';
+import type { GroupDTO } from '../models/UserGroup.ts';
 
 // The only store in the mock server, so every module reads and writes the same users
 class UserStore {
@@ -11,19 +12,26 @@ class UserStore {
   private userSessionIds = new Map<string, User>();
   private familyName = new Map<string, Set<string>>();
   private highestUserNumber: number | undefined;
+  private groupIds = new Map<string, number>();
+  private highestGroupId = 0;
 
   add(user: User): User {
     const email = user.email.toLowerCase();
-    if (this.userNumbers.has(user.userNumber))
+    if (this.userNumbers.has(user.userNumber)) {
       throw new Error(`User ${user.userNumber} already exists`);
-    if (this.userEmails.has(email))
+    }
+    if (this.userEmails.has(email)) {
       throw new Error(`Email ${user.email} already in use`);
-    if (user.sessionId && this.userSessionIds.has(user.sessionId))
+    }
+    if (user.sessionId && this.userSessionIds.has(user.sessionId)) {
       throw new Error(`Session ${user.sessionId} already in use`);
+    }
 
     this.userNumbers.set(user.userNumber, user);
     this.userEmails.set(email, user);
-    if (user.sessionId) this.userSessionIds.set(user.sessionId, user);
+    if (user.sessionId) {
+      this.userSessionIds.set(user.sessionId, user);
+    }
 
     const key = user.familyName.toLowerCase();
     let bucket = this.familyName.get(key);
@@ -32,32 +40,41 @@ class UserStore {
       this.familyName.set(key, bucket);
     }
     bucket.add(user.userNumber);
+    this.updateGroupIds(user.toGroupMemberships().groups);
 
     const userNumber = Number(user.userNumber);
     if (
       Number.isInteger(userNumber) &&
       (this.highestUserNumber === undefined ||
         userNumber > this.highestUserNumber)
-    )
+    ) {
       this.highestUserNumber = userNumber;
+    }
     return user;
   }
 
   remove(userNumber: number | string): boolean {
     const user = this.userNumbers.get(String(userNumber));
-    if (!user) return false;
+    if (!user) {
+      return false;
+    }
 
     this.userNumbers.delete(user.userNumber);
     this.userEmails.delete(user.email.toLowerCase());
-    if (user.sessionId) this.userSessionIds.delete(user.sessionId);
+    if (user.sessionId) {
+      this.userSessionIds.delete(user.sessionId);
+    }
 
     const key = user.familyName.toLowerCase();
     const bucket = this.familyName.get(key);
     bucket?.delete(user.userNumber);
-    if (bucket?.size === 0) this.familyName.delete(key);
+    if (bucket?.size === 0) {
+      this.familyName.delete(key);
+    }
 
-    if (Number(user.userNumber) === this.highestUserNumber)
+    if (Number(user.userNumber) === this.highestUserNumber) {
       this.highestUserNumber = this.findHighestUserNumber();
+    }
     return true;
   }
 
@@ -67,6 +84,8 @@ class UserStore {
     this.userSessionIds.clear();
     this.familyName.clear();
     this.highestUserNumber = undefined;
+    this.groupIds.clear();
+    this.highestGroupId = 0;
   }
 
   get size(): number {
@@ -84,10 +103,36 @@ class UserStore {
       if (
         Number.isInteger(userNumber) &&
         (highest === undefined || userNumber > highest)
-      )
+      ) {
         highest = userNumber;
+      }
     }
     return highest;
+  }
+
+  addGroups(user: User, groups: GroupDTO[]): void {
+    this.updateGroupIds(groups);
+    user.addGroups(groups);
+  }
+
+  private updateGroupIds(groups: GroupDTO[]): void {
+    for (const { id, groupName } of groups) {
+      if (!this.groupIds.has(groupName)) {
+        this.groupIds.set(groupName, id);
+      }
+      if (id > this.highestGroupId) {
+        this.highestGroupId = id;
+      }
+    }
+  }
+
+  getGroupId(groupName: string): number {
+    let id = this.groupIds.get(groupName);
+    if (id === undefined) {
+      id = ++this.highestGroupId;
+      this.groupIds.set(groupName, id);
+    }
+    return id;
   }
 
   findByUserNumber(userNumber: number | string): User | undefined {

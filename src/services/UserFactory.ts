@@ -1,10 +1,17 @@
 import { fakerEN_GB as faker } from '@faker-js/faker';
 import { userStore } from '../datasources/UserStore.ts';
 import { User } from '../models/User.ts';
+import type { GroupDTO } from '../models/UserGroup.ts';
+import type { RoleDTO } from '../models/UserRoles.ts';
+
+const DEFAULT_ROLES: RoleDTO[] = [{ name: 'User' }];
+type UserGroup = Omit<GroupDTO, 'id'>;
 
 interface UsersRequest {
   userCount: number;
   startUserNumber?: number | undefined;
+  roles?: RoleDTO[] | undefined;
+  groups?: UserGroup[] | undefined;
 }
 
 function acronym(name: string): string {
@@ -21,6 +28,8 @@ class UserFactory {
     const count = userInput.userCount;
     const startUserNumber =
       userInput.startUserNumber ?? (this.store.lastUserNumber ?? -1) + 1;
+    const roles = userInput.roles ?? DEFAULT_ROLES;
+    const groups = this.assignGroupIds(userInput.groups ?? []);
     const created: User[] = [];
     try {
       for (
@@ -28,17 +37,33 @@ class UserFactory {
         userNumber < startUserNumber + count;
         userNumber++
       ) {
-        created.push(this.store.add(this.createUser(userNumber)));
+        created.push(
+          this.store.add(this.createUser(userNumber, roles, groups))
+        );
       }
     } catch (error) {
-      for (const user of created) this.store.remove(user.userNumber);
+      for (const user of created) {
+        this.store.remove(user.userNumber);
+      }
       throw error;
     }
 
     return created;
   }
 
-  private createUser(userNumber: number): User {
+  private assignGroupIds(groups: UserGroup[]): GroupDTO[] {
+    return groups.map(({ groupName, comments }) => ({
+      id: this.store.getGroupId(groupName),
+      groupName,
+      comments,
+    }));
+  }
+
+  private createUser(
+    userNumber: number,
+    roles: RoleDTO[],
+    groups: GroupDTO[]
+  ): User {
     const sexType = faker.person.sexType();
     const orgName = faker.company.name();
     const deptName = faker.commerce.department();
@@ -56,15 +81,12 @@ class UserFactory {
       establishmentId: faker.number.int({ min: 1, max: 1000 }),
       workPhone: faker.phone.number(),
       mobilePhone: faker.phone.number(),
-      roles: [
-        {
-          name: 'User',
-        },
-      ],
+      roles,
+      groups,
       sessionId: `token-${userNumber}`,
     });
   }
 }
 
 export { UserFactory };
-export type { UsersRequest };
+export type { UsersRequest, UserGroup };

@@ -1,4 +1,4 @@
-import { Group, type GroupDetails, type GroupDTO } from './UserGroup.ts';
+import { Group, type GroupDTO } from './UserGroup.ts';
 import { Role, type RoleDTO } from './UserRoles.ts';
 
 export interface UserDetails {
@@ -22,7 +22,7 @@ export interface UserDetails {
   mobilePhone?: string | undefined;
   status?: string | undefined;
   roles?: (Role | RoleDTO)[] | undefined;
-  groups?: (Group | GroupDetails)[] | undefined;
+  groups?: (Group | GroupDTO)[] | undefined;
   sessionId?: string | undefined;
 }
 
@@ -166,12 +166,13 @@ class User {
     return this.roles.map((role) => role.toRoleDTO());
   }
 
-  addGroups(groups: (Group | GroupDetails)[]): void {
+  addGroups(groups: (Group | GroupDTO)[]): void {
     for (const group of groups) {
       if (
         this.groups.some((existing) => existing.groupName === group.groupName)
-      )
+      ) {
         continue;
+      }
       this.groups.push(group instanceof Group ? group : new Group(group));
     }
   }
