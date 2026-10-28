@@ -169,7 +169,7 @@ function createUsers(request: MockRequest): HttpResponse {
 }
 
 function resetUsers(): HttpResponse {
-  return jsonResponse(200, { users: reseedUsers() });
+  return jsonResponse(200, { totalUsers: reseedUsers() });
 }
 
 function getStatus(): HttpResponse {
