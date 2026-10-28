@@ -9,10 +9,19 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+      day: "saturday"
+      time: "08:00"
+    # Only 1 PR at a time so tests pass and it merges before the next PR opens
+    open-pull-requests-limit: 1
     pull-request-branch-name:
       # Separate sections of the branch name with a hyphen because docker hub doesn't want slashes
       # for example, `dependabot-npm_and_yarn-next_js-acorn-6.4.1`
       separator: "-"
+    commit-message:
+      # Gives PR titles like "chore(deps): bump x from 1.0.0 to 1.1.0" to pass the PR title check
+      prefix: "chore"
+      include: "scope"
+    versioning-strategy: increase-if-necessary
     cooldown: # Cooldown: wait before creating PRs for newly released versions
       default-days: 1 # fallback wait for all updates
       semver-major-days: 30 # waits 30 days for major updates
@@ -20,3 +29,38 @@ updates:
       semver-patch-days: 1 # optional; explicit patch wait (defaults to default-days)
       include:
         - "*" # apply to all dependencies
+
+  - package-ecosystem: "github-actions"
+    directory: "/" # Checks workflows in .github/workflows
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "10:00"
+    open-pull-requests-limit: 1
+    pull-request-branch-name:
+      separator: "-"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    cooldown:
+      default-days: 7 # wait a week before picking up new action releases
+
+  - package-ecosystem: "docker"
+    directory: "/" # Checks the FROM lines in the Dockerfile
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "08:00"
+    open-pull-requests-limit: 1
+    pull-request-branch-name:
+      separator: "-"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    # Skip major base image updates (e.g. a new Node major), those need code and CI changes too
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
+    cooldown:
+      default-days: 7

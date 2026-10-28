@@ -1,0 +1,305 @@
+[
+  {
+    "country": "UNITED KINGDOM",
+    "deptAcronym": "SCD",
+    "deptName": "Scientific Computing",
+    "displayName": "Service Account",
+    "email": "service@useroffice.stfc.ac.uk",
+    "establishmentId": "5",
+    "familyName": "Account",
+    "firstNameKnownAs": "Service",
+    "fullName": "Mr Service Account",
+    "givenName": "Service",
+    "initials": "S",
+    "orgName": "STFC",
+    "title": "Mr",
+    "userNumber": "0",
+    "roles": [
+      {
+        "name": "User Officer"
+      }
+    ],
+    "groups": [],
+    "sessionId": "token"
+  },
+  {
+    "country": "UNITED KINGDOM",
+    "deptAcronym": "SCD",
+    "deptName": "Scientific Computing",
+    "displayName": "Carl Carlsson",
+    "email": "Javon4@hotmail.com",
+    "establishmentId": "5",
+    "familyName": "Carlsson",
+    "firstNameKnownAs": "Carl",
+    "fullName": "Mr Carl Carlsson",
+    "givenName": "Carl",
+    "initials": "C",
+    "orgName": "STFC",
+    "title": "Mr",
+    "userNumber": "1",
+    "roles": [
+      {
+        "name": "Internal proposal submitter"
+      },
+      {
+        "name": "FAP Member"
+      },
+      {
+        "name": "FAP Secretary"
+      },
+      {
+        "name": "ISIS Instrument Scientist"
+      },
+      {
+        "name": "Internal Reviewer"
+      }
+    ],
+    "groups": [
+      {
+        "id": 50,
+        "groupName": "Fap Chair",
+        "comments": ""
+      }
+    ],
+    "sessionId": "user"
+  },
+  {
+    "country": "UNITED KINGDOM",
+    "deptAcronym": "SCD",
+    "deptName": "Scientific Computing",
+    "displayName": "Anders Andersson",
+    "email": "Aaron_Harris49@gmail.com",
+    "establishmentId": "5",
+    "familyName": "Carlsson",
+    "firstNameKnownAs": "Carl",
+    "fullName": "Mr Carl Carlsson",
+    "givenName": "Carl",
+    "initials": "C",
+    "orgName": "STFC",
+    "title": "Mr",
+    "userNumber": "2",
+    "roles": [
+      {
+        "name": "User Officer"
+      }
+    ],
+    "groups": [],
+    "sessionId": "officer"
+  },
+  {
+    "country": "UNITED KINGDOM",
+    "deptAcronym": "SCD",
+    "deptName": "Scientific Computing",
+    "displayName": "Nils",
+    "email": "nils@ess.se",
+    "establishmentId": "5",
+    "familyName": "Nilsson",
+    "firstNameKnownAs": "Nils",
+    "fullName": "Mr Nils Nilsson",
+    "givenName": "Nils",
+    "initials": "N",
+    "orgName": "STFC",
+    "title": "Mr",
+    "userNumber": "3",
+    "roles": [
+      {
+        "name": "FAP Secretary"
+      },
+      {
+        "name": "FAP Member"
+      }
+    ],
+    "groups": [],
+    "sessionId": "reviewer"
+  },
+  {
+    "country": "UNITED KINGDOM",
+    "deptAcronym": "SCD",
+    "deptName": "Scientific Computing",
+    "displayName": "Benjamin Beckley",
+    "email": "ben@inbox.com",
+    "establishmentId": "7",
+    "familyName": "Beckley",
+    "firstNameKnownAs": "Ben",
+    "fullName": "Mr Benjamin Beckley",
+    "givenName": "Benjamin",
+    "initials": "B",
+    "orgName": "STFC",
+    "title": "Mr",
+    "userNumber": "4",
+    "roles": [
+      {
+        "name": "User"
+      },
+      {
+        "name": "FAP Secretary"
+      },
+      {
+        "name": "FAP Member"
+      },
+      {
+        "name": "FAP Chair"
+      },
+      {
+        "name": "ISIS Instrument Scientist"
+      },
+      {
+        "name": "Internal Reviewer"
+      }
+    ],
+    "groups": [],
+    "sessionId": "internalUser"
+  },
+  {
+    "country": "UNITED KINGDOM",
+    "deptAcronym": "SCD",
+    "deptName": "Scientific Computing",
+    "displayName": "Benjamin Beckley",
+    "email": "unverified-user@example.com",
+    "establishmentId": "5",
+    "familyName": "Benjamin",
+    "fedId": "puf57046",
+    "firstNameKnownAs": "Ben",
+    "fullName": "Mr Benjamin Bryson Beckley",
+    "givenName": "Benjamin",
+    "initials": "B",
+    "mobilePhone": "085793668438",
+    "orgName": "None STFC",
+    "status": "Undergraduate Student",
+    "title": "Mr",
+    "userNumber": "5",
+    "roles": [
+      {
+        "name": "User"
+      }
+    ],
+    "groups": [],
+    "sessionId": "externalUser"
+  },
+  {
+    "country": "UNITED KINGDOM",
+    "deptAcronym": "SCD",
+    "deptName": "Scientific Computing",
+    "displayName": "David Dawson",
+    "email": "david@teleworm.us",
+    "establishmentId": "5",
+    "familyName": "Dawson",
+    "fedId": "abc12345",
+    "firstNameKnownAs": "",
+    "fullName": "Mr David Dawson",
+    "givenName": "David",
+    "initials": "DD",
+    "mobilePhone": "08579366828",
+    "orgName": "STFC",
+    "status": "Undergraduate Student",
+    "title": "Mr",
+    "userNumber": "6",
+    "roles": [
+      {
+        "name": "FAP Member"
+      },
+      {
+        "name": "FAP Secretary"
+      }
+    ],
+    "groups": [],
+    "sessionId": "secretary"
+  },
+  {
+    "country": "UNITED KINGDOM",
+    "deptAcronym": "SCD",
+    "deptName": "Scientific Computing",
+    "displayName": "Benjamin Beckley",
+    "email": "benjamin.beckley@inbox.com",
+    "establishmentId": "7",
+    "familyName": "Beckley",
+    "firstNameKnownAs": "Benjamin",
+    "fullName": "Mr Benjamin Beckley",
+    "givenName": "Benjamin",
+    "initials": "B",
+    "orgName": "STFC",
+    "title": "Mr",
+    "userNumber": "7",
+    "roles": [
+      {
+        "name": "User"
+      }
+    ],
+    "groups": []
+  },
+  {
+    "country": "UNITED KINGDOM",
+    "deptAcronym": "SCD",
+    "deptName": "Scientific Computing",
+    "displayName": "instr.sci1",
+    "email": "instr.sci1@local.host",
+    "establishmentId": "5",
+    "familyName": "Scientist1",
+    "fedId": "puf57046",
+    "firstNameKnownAs": "Ben",
+    "fullName": "Mr Instrument 1 Scientist1",
+    "givenName": "Instrument",
+    "initials": "B",
+    "mobilePhone": "085793668438",
+    "orgName": "None STFC",
+    "status": "Undergraduate Student",
+    "title": "Mr",
+    "userNumber": "8",
+    "roles": [
+      {
+        "name": "User"
+      }
+    ],
+    "groups": []
+  },
+  {
+    "country": "UNITED KINGDOM",
+    "deptAcronym": "SCD",
+    "deptName": "Scientific Computing",
+    "displayName": "instr.sci1",
+    "email": "instr.sci2@local.host",
+    "establishmentId": "5",
+    "familyName": "Scientist1",
+    "fedId": "puf57046",
+    "firstNameKnownAs": "Ben",
+    "fullName": "Mr Instrument 1 Scientist1",
+    "givenName": "Instrument",
+    "initials": "B",
+    "mobilePhone": "085793668438",
+    "orgName": "None STFC",
+    "status": "Undergraduate Student",
+    "title": "Mr",
+    "userNumber": "9",
+    "roles": [
+      {
+        "name": "User"
+      }
+    ],
+    "groups": []
+  },
+  {
+    "country": "UNITED KINGDOM",
+    "deptAcronym": "SCD",
+    "deptName": "Scientific Computing",
+    "displayName": "instr.sci1",
+    "email": "not.instr.sci@local.host",
+    "establishmentId": "5",
+    "familyName": "Scientist1",
+    "fedId": "puf57046",
+    "firstNameKnownAs": "Ben",
+    "fullName": "Mr Instrument 1 Scientist1",
+    "givenName": "Instrument",
+    "initials": "B",
+    "mobilePhone": "085793668438",
+    "orgName": "None STFC",
+    "status": "Undergraduate Student",
+    "title": "Mr",
+    "userNumber": "10",
+    "roles": [
+      {
+        "name": "User"
+      }
+    ],
+    "groups": []
+  }
+]
