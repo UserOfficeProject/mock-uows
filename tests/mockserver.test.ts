@@ -464,7 +464,7 @@ describe('POST /mock-server/reset', () => {
       method: 'POST',
     });
     assert.equal(response.status, 200);
-    assert.deepEqual(await response.json(), { users: usersData.length });
+    assert.deepEqual(await response.json(), { totalUsers: usersData.length });
 
     const removed = await fetch(
       `${BASE_URL}/basic-person-details?userNumbers=${extraUser.userNumber}`
