@@ -34,8 +34,9 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.tag_version.outputs.new_tag }}
-          name: Release ${{ steps.tag_version.outputs.new_tag }}
-          body: ${{ steps.tag_version.outputs.changelog }}
+          name: ${{ steps.tag_version.outputs.new_tag }}
+          # List every PR merged creates a release
+          generateReleaseNotes: true
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
