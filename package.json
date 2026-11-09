@@ -21,7 +21,7 @@
   "dependencies": {
     "@faker-js/faker": "^10.6.0",
     "@user-office-software/duo-logger": "^2.3.2",
-    "mockserver-client": "9.0.0"
+    "mockserver-client": "9.2.0"
   },
   "type": "module",
   "devDependencies": {
