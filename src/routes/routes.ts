@@ -24,35 +24,35 @@ interface Route {
 const ROUTES: Route[] = [
   {
     method: 'GET',
-    path: '/users-service/v1/basic-person-details',
+    path: '/users-service/basic-person-details',
     handler: getBasicPersonDetails,
   },
   {
     method: 'GET',
-    path: '/users-service/v1/basic-person-details/searchable',
+    path: '/users-service/basic-person-details/searchable',
     handler: getBasicPersonDetails,
   },
   {
     method: 'GET',
-    path: '/users-service/v1/role/{userNumber}',
+    path: '/users-service/role/{userNumber}',
     pathParameters: { userNumber: ['[0-9]+'] },
     handler: getRoles,
   },
   {
     method: 'GET',
-    path: '/users-service/v1/sessions/{sessionId}',
+    path: '/users-service/sessions/{sessionId}',
     pathParameters: { sessionId: ['[^/]+'] },
     handler: getSession,
   },
-  { method: 'POST', path: '/users-service/v1/token', handler: validateToken },
+  { method: 'POST', path: '/users-service/token', handler: validateToken },
   {
     method: 'POST',
-    path: '/users-service/v1/group-memberships/fap',
+    path: '/users-service/group-memberships/fap',
     handler: fapGroupMemberships,
   },
   {
     method: 'DELETE',
-    path: '/users-service/v1/group-memberships/fap',
+    path: '/users-service/group-memberships/fap',
     handler: fapGroupMemberships,
   },
   { method: 'POST', path: '/mock-server/reset', handler: resetUsers },

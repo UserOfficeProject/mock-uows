@@ -7,7 +7,7 @@ import { registerRoutes } from '../src/routes/routes.ts';
 import { userStore } from '../src/datasources/UserStore.ts';
 import usersData from '../src/data/users.json' with { type: 'json' };
 
-const BASE_URL = `http://localhost:1081/users-service/v1`;
+const BASE_URL = `http://localhost:1081/users-service`;
 const MOCK_SERVER_URL = `http://localhost:1081/mock-server`;
 let mockServer: MockServerHandle;
 

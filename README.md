@@ -20,7 +20,7 @@ In user-office-core the two containers are started by `apps/backend/docker-compo
 Once the client logs that the callbacks are created, the endpoints are served by MockServer:
 
 ```sh
-curl 'http://localhost:1080/users-service/v1/basic-person-details?userNumbers=1'
+curl 'http://localhost:1080/users-service/basic-person-details?userNumbers=1'
 curl http://localhost:1080/mock-server/status
 ```
 
@@ -58,13 +58,13 @@ You need the Node version set in `engines` in [package.json](package.json).
 
 | Method   | Path                                                | Description                                                                   |
 | -------- | --------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `GET`    | `/users-service/v1/basic-person-details`            | Users by `userNumbers`, `emails` or `surname` (repeatable). 404 if none match |
-| `GET`    | `/users-service/v1/basic-person-details/searchable` | Same, but returns `[]` instead of 404                                         |
-| `GET`    | `/users-service/v1/role/{userNumber}`               | The user's roles                                                              |
-| `GET`    | `/users-service/v1/sessions/{sessionId}`            | `{ userId, sessionId }` for a session                                         |
-| `POST`   | `/users-service/v1/token`                           | Validates `{ "token": "<sessionId>" }`. 409 if the token is unknown           |
-| `POST`   | `/users-service/v1/group-memberships/fap`           | Adds FAP groups: `{ "userNumber": 3, "groups": [...] }`                       |
-| `DELETE` | `/users-service/v1/group-memberships/fap`           | Removes a FAP group: `?userNumber=3&groupName=...`                            |
+| `GET`    | `/users-service/basic-person-details`            | Users by `userNumbers`, `emails` or `surname` (repeatable). 404 if none match |
+| `GET`    | `/users-service/basic-person-details/searchable` | Same, but returns `[]` instead of 404                                         |
+| `GET`    | `/users-service/role/{userNumber}`               | The user's roles                                                              |
+| `GET`    | `/users-service/sessions/{sessionId}`            | `{ userId, sessionId }` for a session                                         |
+| `POST`   | `/users-service/token`                           | Validates `{ "token": "<sessionId>" }`. 409 if the token is unknown           |
+| `POST`   | `/users-service/group-memberships/fap`           | Adds FAP groups: `{ "userNumber": 3, "groups": [...] }`                       |
+| `DELETE` | `/users-service/group-memberships/fap`           | Removes a FAP group: `?userNumber=3&groupName=...`                            |
 
 Email and surname lookups ignore case. FAP group changes are kept in memory until the mock restarts or is reset.
 
